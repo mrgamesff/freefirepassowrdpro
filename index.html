@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>نفذ الشروط</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Tahoma', sans-serif;
+      color: white;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      text-align: center;
+      padding: 50px 10px;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #00ffff;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+      animation: fadeInDown 1s ease forwards;
+    }
+    .progress-container {
+      width: 100%;
+      max-width: 500px;
+      margin: 0 auto 30px;
+      height: 20px;
+      background-color: #444;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px #0ff6;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0ff, #00f);
+      transition: width 0.5s ease;
+      border-radius: 10px;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #111a;
+      border: 2px solid #444;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin: 15px auto;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 0 10px #0ff2;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(20px);
+      transition: 0.5s ease;
+    }
+    .step.active {
+      opacity: 1;
+      pointer-events: auto;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+    .step.completed {
+      border-color: lime;
+      background-color: #141414dd;
+    }
+    .step span {
+      text-align: right;
+      font-size: 16px;
+    }
+    .check { font-size: 20px; }
+    a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+    }
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .final-section {
+      margin-top: 30px;
+    }
+    .final-message {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: red;
+      text-shadow: 0 0 5px red;
+    }
+    .final-buttons {
+      background: #111c;
+      border-radius: 12px;
+      border: 2px solid #444;
+      padding: 15px 10px;
+      max-width: 500px;
+      width: 100%;
+      margin: auto;
+      box-shadow: 0 0 12px #0ff4;
+    }
+    .final-buttons a {
+      display: block;
+      background-color: #555;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 10px auto;
+      pointer-events: none;
+      opacity: 0.5;
+      transition: 0.3s;
+      box-shadow: 0 0 6px #000;
+    }
+    .final-buttons a.active {
+      background-color: #0c0;
+      pointer-events: auto;
+      opacity: 1;
+      box-shadow: 0 0 15px #0f0;
+    }
+    .final-buttons a:hover { transform: scale(1.03); }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h2>نفذ هذه الخطوات أولاً لكي يتم فتح لك روابط التحميل</h2>
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div id="stepsContainer"></div>
+  <div class="final-section">
+    <div id="finalMessage" class="final-message">❌ نفّذ الخطوات أولاً لكي يتم فتح روابط التحميل</div>
+    <div class="final-buttons">
+      <a id="btnDownload" href="#" onclick="goToDownload(); return false;">🔒 اضغط هنا للحصول على كلمة السر الخاصة بأسكريبت فري فاير</a>
+    </div>
+  </div>
+  <script>
+  const steps = [
+    { id: 1, text: "📺🔔 اضغط هنا وقم بالاشتراك في القناة 1 وتفعيل زر الجرس", url: "https://www.youtube.com/@MRGAMESFF-k3q" },
+    { id: 2, text: "📺🔔 اضغط هنا وقم بالاشتراك في القناة 2 وتفعيل زر الجرس", url: "https://www.youtube.com/@DarkPanda-DP" },
+    { id: 3, text: "👍💬 اضغط هنا وقم بعمل لايك وتعليق مميز جدًا للفيديو رقم 1", url: "https://youtu.be/D0wvL4eu2_w?si=PhhTXVyBznEN8IOu" },
+    { id: 4, text: "👍💬 اضغط هنا وقم بعمل لايك وتعليق مميز جدًا للفيديو رقم 2", url: "https://youtu.be/tRfwoy1EnTA?si=3UZ8iDkwHQL8Qhbl" },
+    { id: 5, text: "👍💬 اضغط هنا وقم بعمل لايك وتعليق مميز جدًا للفيديو رقم 3", url: "https://youtu.be/5ZGLx8d_0tA?si=Zpai-kX0qzKIM9r3" },
+    { id: 6, text: "👍💬 اضغط هنا وقم بعمل لايك وتعليق مميز جدًا للفيديو رقم 4", url: "https://youtu.be/2Q4C7JHRCbM?si=vT8MJJAZu5_lXPUA" },
+    { id: 7, text: "👍💬 اضغط هنا وقم بعمل لايك وتعليق مميز جدًا للفيديو رقم 5", url: "https://youtu.be/2NUIqCo9GsA?si=WFMCa_Pzd4gSflgq" },
+    { id: 8, text: "👍💬 اضغط هنا وقم بعمل لايك وتعليق مميز جدًا للفيديو رقم 6", url: "https://youtu.be/0vR6P8gIS9k?si=0aL3OBWgI-cyIlt8" }
+  ];
+
+  const localKeys = {
+    1: 'stepsState',
+    2: 'stepsState',
+    3: 'step3State_ff_v1_script_page4433_unique2025_like1',
+    4: 'step4State_ff_v1_script_page4433_unique2025_like2',
+    5: 'step5State_ff_v1_script_page4433_unique2025_like3',
+    6: 'step6State_ff_v1_script_page4433_unique2025_like4',
+    7: 'step7State_ff_v1_script_page4433_unique2025_like5',
+    8: 'step8State_ff_v1_script_page4433_unique2025_like6'
+  };
+
+
+    const expiry = 365 * 24 * 60 * 60 * 1000;
+
+    function isExpired(state) {
+      return !state || Date.now() - state.timestamp > expiry;
+    }
+
+    function saveStep(step) {
+      const key = localKeys[step];
+      let state = JSON.parse(localStorage.getItem(key) || '{}');
+      state.completed = true;
+      state.timestamp = Date.now();
+      localStorage.setItem(key, JSON.stringify(state));
+    }
+
+    function createStepElement(step) {
+      const div = document.createElement('div');
+      div.id = `step${step.id}`;
+      div.className = 'step';
+      div.innerHTML = `
+        <a href="#" onclick="handleStep(${step.id}, '${step.url}'); return false;">
+          <span>${step.text}</span>
+          <span id="check${step.id}">➡️</span>
+        </a>
+      `;
+      return div;
+    }
+
+    function handleStep(id, url) {
+      document.getElementById(`check${id}`).innerHTML = '<span class="loading"></span>';
+      window.open(url, '_blank');
+      setTimeout(() => {
+        document.getElementById(`step${id}`).classList.add('completed');
+        document.getElementById(`check${id}`).innerText = '✅';
+        saveStep(id);
+        if (steps[id]) document.getElementById(`step${id + 1}`)?.classList.add('active');
+        updateProgressBar();
+        checkFinal();
+      }, 10000);
+    }
+
+    function updateProgressBar() {
+      let done = 0;
+      steps.forEach(s => {
+        if (document.getElementById(`step${s.id}`).classList.contains('completed')) done++;
+      });
+      document.getElementById('progressBar').style.width = (done / steps.length * 100) + '%';
+    }
+
+    function checkFinal() {
+      const all = steps.every(s => document.getElementById(`step${s.id}`).classList.contains('completed'));
+      if (all) {
+        document.getElementById('finalMessage').innerText = '✅ تم تنفيذ كل الخطوات بنجاح';
+        document.getElementById('finalMessage').style.color = 'lime';
+        const btn = document.getElementById('btnDownload');
+        btn.classList.add('active');
+        btn.innerText = '🔓 اضغط هنا للحصول على كلمة السر الخاصة بأسكريبت فري فاير';
+      }
+    }
+
+    function goToDownload() {
+      window.open('https://shr2.link/seCl3', '_blank');
+    }
+
+    window.onload = () => {
+      const container = document.getElementById('stepsContainer');
+      steps.forEach(step => {
+        const el = createStepElement(step);
+        const saved = JSON.parse(localStorage.getItem(localKeys[step.id]) || '{}');
+        if (!isExpired(saved) && saved.completed) {
+          el.classList.add('completed');
+          el.querySelector(`#check${step.id}`).innerText = '✅';
+        }
+        if (step.id === 1 || document.getElementById(`step${step.id - 1}`)?.classList.contains('completed')) {
+          el.classList.add('active');
+        }
+        container.appendChild(el);
+      });
+      updateProgressBar();
+      checkFinal();
+    };
+  </script>
+</body>
+</html>
